@@ -9,6 +9,13 @@
 import SpriteKit
 import GameplayKit
 
+//  3 Enemy types
+enum Enemies{
+    case small
+    case medium
+    case large
+}
+
 class GameScene: SKScene {
     
 //    Array of SKSpriteNodes(tracks)
@@ -52,10 +59,39 @@ class GameScene: SKScene {
     }
     
     
+    func createEnemy(type: Enemies, forTrack track: Int) -> SKShapeNode?{
+        
+        let enemySprite = SKShapeNode()
+        
+        switch type {
+//            Enemy Sprite defined path, picked color
+        case .small:
+            enemySprite.path = CGPath(roundedRect: CGRect(x: -10, y: 0, width: 20, height: 70), cornerWidth: 8, cornerHeight: 8, transform: nil)
+            enemySprite.fillColor = UIColor(red: 0.4431, green: 0.5529, blue: 0.7451, alpha: 1)
+        case .medium:
+            enemySprite.path = CGPath(roundedRect: CGRect(x: -10, y: 0, width: 20, height: 100), cornerWidth: 8, cornerHeight: 8, transform: nil)
+            enemySprite.fillColor = UIColor(red: 0.7804, green: 0.4039, blue: 0.4039, alpha: 1)
+        case .large:
+            enemySprite.path = CGPath(roundedRect: CGRect(x: -10, y: 0, width: 20, height: 130), cornerWidth: 8, cornerHeight: 8, transform: nil)
+            enemySprite.fillColor = UIColor(red: 0.7804, green: 0.6392, blue: 0.4039, alpha: 1)
+        }
+        
+//        Available Enemy Position
+        guard let enemyPosition = tracksArray?[track].position else {return nil}
+            enemySprite.position.x = enemyPosition.x
+            enemySprite.position.y = 50
+            
+            return enemySprite
+    }
+    
+    
 //    Called as scene is presented in the SKView
     override func didMove(to view: SKView) {
         setUpTracks()
         createPlayer()
+        
+//        Unwrapped instance of SKShapeNode?
+        self.addChild(createEnemy(type: .large, forTrack: 3)!)
         
 //        accessed first track(0) and changed color to test if app updated
         tracksArray?.first?.color = UIColor.green
