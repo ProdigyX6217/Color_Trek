@@ -51,6 +51,20 @@ class GameScene: SKScene {
     }
     
     
+    func moveVertically (up:Bool) {
+        if up {
+//            Move Player UP
+            let moveAction = SKAction.moveBy(x: 0, y: 3, duration: 0.01)
+            let repeatAction = SKAction.repeatForever(moveAction)
+            player?.run(repeatAction)
+        }else{
+//            Move Player DOWN
+            let moveAction = SKAction.moveBy(x: 0, y: -3, duration: 0.01)
+            let repeatAction = SKAction.repeatForever(moveAction)
+            player?.run(repeatAction)
+        }
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 //        Using touches Set and accessing first object
         if let touch = touches.first{
@@ -62,21 +76,20 @@ class GameScene: SKScene {
             if node?.name == "right" {
                 print("RIGHT")
             } else if node?.name == "up"{
-                print("UP")
-            } else if node?.name == "left" {
-                print("LEFT")
+                moveVertically(up: true)
+            } else if node?.name == "down" {
+                moveVertically(up: false)
             }
         }
     }
     
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        <#code#>
+        player?.removeAllActions()
     }
     
-    
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        <#code#>
+        player?.removeAllActions()
     }
 
     override func update(_ currentTime: TimeInterval) {
