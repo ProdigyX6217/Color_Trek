@@ -15,6 +15,13 @@ class GameScene: SKScene {
     var tracksArray:[SKSpriteNode]? = [SKSpriteNode]()
     var player:SKSpriteNode?
     
+//    Tracking which track the player is currently on
+    var currentTrack = 0
+    var movingToTrack = false
+    
+//    moveSound
+    let moveSound = SKAction.playSoundFileNamed("move.wav", waitForCompletion: false)
+    
     
     func setUpTracks(){
 //        Iterates through tracks(child nodes)
@@ -65,6 +72,30 @@ class GameScene: SKScene {
         }
     }
     
+    
+    func moveToNextTrack(){
+//        stopping all player actions
+        player?.removeAllActions()
+        movingToTrack = true
+
+//        Calculate next available track
+        guard let nextTrack = tracksArray?[currentTrack + 1].position else {return}
+
+//        Check if player is available/ have player move horizontally
+        if let player = self.player {
+            let moveAction = SKAction.move(to: CGPoint(x: nextTrack.x, y: player.position.y), duration: 0.2)
+            player.run(moveAction, completion: {
+                self.movingToTrack = false
+            })
+            
+            currentTrack += 1
+            
+//            Sound plays when player moves
+            self.run(moveSound)
+        }
+    }
+    
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 //        Using touches Set and accessing first object
         if let touch = touches.first{
@@ -74,7 +105,7 @@ class GameScene: SKScene {
             let node = self.nodes(at: location).first
             
             if node?.name == "right" {
-                print("RIGHT")
+                moveToNextTrack()
             } else if node?.name == "up"{
                 moveVertically(up: true)
             } else if node?.name == "down" {
@@ -85,13 +116,17 @@ class GameScene: SKScene {
     
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        player?.removeAllActions()
+        if !movingToTrack{
+            player?.removeAllActions()
+        }
     }
+    
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         player?.removeAllActions()
     }
 
+    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
     }
