@@ -13,7 +13,8 @@ class GameScene: SKScene {
     
 //    Array of SKSpriteNodes(tracks)
     var tracksArray:[SKSpriteNode]? = [SKSpriteNode]()
-
+    var player:SKSpriteNode?
+    
     func setUpTracks(){
 //        Iterates through tracks(child nodes)
         for i in 0 ... 8 {
@@ -25,15 +26,30 @@ class GameScene: SKScene {
         }
     }
     
+    
+    func createPlayer(){
+//        Player Initialized
+        player = SKSpriteNode(imageNamed: "player")
+//        Create Player Position Constant by using tracks Array
+        guard let playerPosition = tracksArray?.first?.position.x else {return}
+//        Player Position Orientation
+        player?.position = CGPoint(x: playerPosition, y: self.size.height / 2)
+        
+//        Add to node tree
+        self.addChild(player!)
+    }
+    
+    
 //    Called as scene is presented in the SKView
     override func didMove(to view: SKView) {
         setUpTracks()
+        createPlayer()
         
 //        accessed first track(0) and changed color to test if app updated
         tracksArray?.first?.color = UIColor.green
     }
     
-    
+
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
     }
