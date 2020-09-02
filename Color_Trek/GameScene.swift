@@ -15,6 +15,7 @@ class GameScene: SKScene {
     var tracksArray:[SKSpriteNode]? = [SKSpriteNode]()
     var player:SKSpriteNode?
     
+    
     func setUpTracks(){
 //        Iterates through tracks(child nodes)
         for i in 0 ... 8 {
@@ -49,6 +50,34 @@ class GameScene: SKScene {
         tracksArray?.first?.color = UIColor.green
     }
     
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        Using touches Set and accessing first object
+        if let touch = touches.first{
+//            Retrieving location from the root node(self
+            let location = touch.previousLocation(in: self)
+//            Passing in location and getting first touch
+            let node = self.nodes(at: location).first
+            
+            if node?.name == "right" {
+                print("RIGHT")
+            } else if node?.name == "up"{
+                print("UP")
+            } else if node?.name == "left" {
+                print("LEFT")
+            }
+        }
+    }
+    
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        <#code#>
+    }
+    
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        <#code#>
+    }
 
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
