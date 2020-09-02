@@ -10,7 +10,7 @@ import SpriteKit
 import GameplayKit
 
 //  3 Enemy types
-enum Enemies{
+enum Enemies: Int{
     case small
     case medium
     case large
@@ -28,6 +28,10 @@ class GameScene: SKScene {
     
 //    moveSound
     let moveSound = SKAction.playSoundFileNamed("move.wav", waitForCompletion: false)
+    
+    let trackVelocities = [180, 200, 250]
+    var directionArray = [Bool]()
+    var velocityArray = [Int]()
     
     
     func setUpTracks(){
@@ -62,6 +66,7 @@ class GameScene: SKScene {
     func createEnemy(type: Enemies, forTrack track: Int) -> SKShapeNode?{
         
         let enemySprite = SKShapeNode()
+        enemySprite.name = "ENEMY"
         
         switch type {
 //            Enemy Sprite defined path, picked color
@@ -78,23 +83,54 @@ class GameScene: SKScene {
         
 //        Available Enemy Position
         guard let enemyPosition = tracksArray?[track].position else {return nil}
-            enemySprite.position.x = enemyPosition.x
-            enemySprite.position.y = 50
+        
+        let up = directionArray[track]
+        
+        enemySprite.position.x = enemyPosition.x
+        enemySprite.position.y = up ? -130 : self.size.height + 130
+         
+        enemySprite.physicsBody = SKPhysicsBody(edgeLoopFrom: enemySprite.path!)
+        enemySprite.physicsBody?.velocity = up ? CGVector(dx: 0, dy: velocityArray[track]) : CGVector(dx: 0, dy: -velocityArray[track])
             
-            return enemySprite
+        return enemySprite
     }
     
+    
+    func spawnEnemies () {
+        for i in 1 ... 7 {
+            let randomEnemyType = Enemies(rawValue: GKRandomSource.sharedRandom().nextInt(upperBound: 3))!
+            if let newEnemy = createEnemy(type: randomEnemyType, forTrack: i) {
+                self.addChild(newEnemy)
+            }
+        }
+        
+        self.enumerateChildNodes(withName: "ENEMY") {   (node: SKNode, nil) in
+            if node.position.y < -150 || node.position.y > self.size.height + 150 {
+                node.removeFromParent()
+            }
+    }
+        
+    }
+        
     
 //    Called as scene is presented in the SKView
     override func didMove(to view: SKView) {
         setUpTracks()
         createPlayer()
         
-//        Unwrapped instance of SKShapeNode?
-        self.addChild(createEnemy(type: .large, forTrack: 3)!)
+        if let numberOfTracks = tracksArray?.count {
+            for _ in 0 ... numberOfTracks {
+                let randomVelocity = GKRandomSource.sharedRandom().nextInt(upperBound: 3)
+                velocityArray.append(trackVelocities[randomVelocity])
+                directionArray.append(GKRandomSource.sharedRandom().nextBool())
+            }
+    }
         
-//        accessed first track(0) and changed color to test if app updated
-        tracksArray?.first?.color = UIColor.green
+//        Calling Spawn Enemies()
+        self.run(SKAction.repeatForever(SKAction.sequence([SKAction.run {
+            self.spawnEnemies()
+            }, SKAction.wait(forDuration: 2)])))
+        
     }
     
     
@@ -170,4 +206,5 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
     }
+        
 }
