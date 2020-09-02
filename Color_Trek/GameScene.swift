@@ -45,6 +45,10 @@ class GameScene: SKScene {
         
 //        Add to node tree
         self.addChild(player!)
+        
+        let pulse = SKEmitterNode(fileNamed: "pulse")!
+        player?.addChild(pulse)
+        pulse.position = CGPoint(x: 0,y: 0)
     }
     
     
