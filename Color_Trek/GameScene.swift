@@ -21,6 +21,7 @@ class GameScene: SKScene {
 //    Array of SKSpriteNodes(tracks)
     var tracksArray:[SKSpriteNode]? = [SKSpriteNode]()
     var player:SKSpriteNode?
+    var target:SKSpriteNode?
     
 //    Tracking which track the player is currently on
     var currentTrack = 0
@@ -32,6 +33,11 @@ class GameScene: SKScene {
     let trackVelocities = [180, 200, 250]
     var directionArray = [Bool]()
     var velocityArray = [Int]()
+    
+//    Define categories
+    let playerCategory:UInt32 = 0x1 << 0
+    let enemyCategory:UInt32 = 0x1 << 1
+    let targetCategory:UInt32 = 0x1 << 2
     
     
     func setUpTracks(){
@@ -47,8 +53,14 @@ class GameScene: SKScene {
     
     
     func createPlayer(){
-//        Player Initialized
+//        Player Initialized w. Physics Body // Assigned Category
         player = SKSpriteNode(imageNamed: "player")
+        player?.physicsBody = SKPhysicsBody(circleOfRadius: player!.size.width / 2)
+        player?.physicsBody?.linearDamping = 0
+        player?.physicsBody?.categoryBitMask = playerCategory
+        player?.physicsBody?.collisionBitMask = 0
+        player?.physicsBody?.contactTestBitMask = enemyCategory | targetCategory
+        
 //        Create Player Position Constant by using tracks Array
         guard let playerPosition = tracksArray?.first?.position.x else {return}
 //        Player Position Orientation
@@ -60,6 +72,13 @@ class GameScene: SKScene {
         let pulse = SKEmitterNode(fileNamed: "pulse")!
         player?.addChild(pulse)
         pulse.position = CGPoint(x: 0,y: 0)
+    }
+    
+    
+    func createTarget(){
+        target = self.childNode(withName: "target") as? SKSpriteNode
+        target?.physicsBody = SKPhysicsBody(circleOfRadius: target!.size.width / 2)
+        target?.physicsBody?.categoryBitMask = targetCategory
     }
     
     
@@ -90,6 +109,7 @@ class GameScene: SKScene {
         enemySprite.position.y = up ? -130 : self.size.height + 130
          
         enemySprite.physicsBody = SKPhysicsBody(edgeLoopFrom: enemySprite.path!)
+        enemySprite.physicsBody?.categoryBitMask = enemyCategory
         enemySprite.physicsBody?.velocity = up ? CGVector(dx: 0, dy: velocityArray[track]) : CGVector(dx: 0, dy: -velocityArray[track])
             
         return enemySprite
