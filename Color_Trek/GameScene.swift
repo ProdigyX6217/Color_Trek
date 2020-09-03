@@ -43,6 +43,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
 //    moveSound
     let moveSound = SKAction.playSoundFileNamed("move.wav", waitForCompletion: false)
+    var backgroundNoise: SKAudioNode!
+    
     
     
     func setUpTracks(){
@@ -148,6 +150,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     
     func nextLevel (playerPhysicsBody:SKPhysicsBody) {
+        self.run(SKAction.playSoundFileNamed("level.wav", waitForCompletion: true))
         let emitter = SKEmitterNode(fileNamed: "fireworks.sks")
         playerPhysicsBody.node?.addChild(emitter!)
         
@@ -165,6 +168,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createTarget()
         
         self.physicsWorld.contactDelegate = self
+        
+        if let musicURL = Bundle.main.url(forResource: "background", withExtension: "wav") {
+            backgroundNoise = SKAudioNode(url: musicURL)
+            addChild(backgroundNoise)
+        }
         
         if let numberOfTracks = tracksArray?.count {
             for _ in 0 ... numberOfTracks {
@@ -269,7 +277,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playerBody = contact.bodyB
             otherBody = contact.bodyA
         }
+        
         if playerBody.categoryBitMask == playerCategory && otherBody.categoryBitMask == enemyCategory {
+            self.run(SKAction.playSoundFileNamed("fail.wav", waitForCompletion: true))
             movePlayerToStart()
             
         } else if playerBody.categoryBitMask == playerCategory && otherBody.categoryBitMask == targetCategory {
