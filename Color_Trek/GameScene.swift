@@ -16,7 +16,7 @@ enum Enemies: Int{
     case large
 }
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
 //    Array of SKSpriteNodes(tracks)
     var tracksArray:[SKSpriteNode]? = [SKSpriteNode]()
@@ -79,6 +79,7 @@ class GameScene: SKScene {
         target = self.childNode(withName: "target") as? SKSpriteNode
         target?.physicsBody = SKPhysicsBody(circleOfRadius: target!.size.width / 2)
         target?.physicsBody?.categoryBitMask = targetCategory
+        target?.physicsBody?.collisionBitMask = 0
     }
     
     
@@ -137,6 +138,9 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         setUpTracks()
         createPlayer()
+        createTarget()
+        
+        self.physicsWorld.contactDelegate = self
         
         if let numberOfTracks = tracksArray?.count {
             for _ in 0 ... numberOfTracks {
@@ -222,6 +226,25 @@ class GameScene: SKScene {
         player?.removeAllActions()
     }
 
+//    Contacts and Collisions Logic
+    func didBegin(_ contact: SKPhysicsContact) {
+        var playerBody:SKPhysicsBody
+        var otherBody:SKPhysicsBody
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            playerBody = contact.bodyA
+            otherBody = contact.bodyB
+        }else{
+            playerBody = contact.bodyB
+            otherBody = contact.bodyA
+        }
+        if playerBody.categoryBitMask == playerCategory && otherBody.categoryBitMask == enemyCategory {
+            print("Enemy Hit")
+        } else if playerBody.categoryBitMask == playerCategory && otherBody.categoryBitMask == targetCategory {
+            print("Target Hit")
+        }
+    }
+    
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
