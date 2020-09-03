@@ -134,9 +134,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 node.removeFromParent()
             }
     }
-        
+    }
+    
+    
+    func movePlayerToStart() {
+        if let player = self.player {
+            player.removeFromParent()
+            self.player = nil
+            self.createPlayer()
+            self.currentTrack = 0
+        }
     }
         
+    
+    func nextLevel (playerPhysicsBody:SKPhysicsBody) {
+        let emitter = SKEmitterNode(fileNamed: "fireworks.sks")
+        playerPhysicsBody.node?.addChild(emitter!)
+        
+        self.run(SKAction.wait(forDuration: 0.5)) {
+            emitter?.removeFromParent()
+            self.movePlayerToStart()
+        }
+    }
+    
     
 //    Scene Entry Point
     override func didMove(to view: SKView) {
@@ -160,7 +180,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }, SKAction.wait(forDuration: 2)])))
         
     }
-    
     
     func moveVertically (up:Bool) {
         if up {
@@ -251,15 +270,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             otherBody = contact.bodyA
         }
         if playerBody.categoryBitMask == playerCategory && otherBody.categoryBitMask == enemyCategory {
-            print("Enemy Hit")
+            movePlayerToStart()
+            
         } else if playerBody.categoryBitMask == playerCategory && otherBody.categoryBitMask == targetCategory {
-            print("Target Hit")
+            nextLevel(playerPhysicsBody: playerBody)
         }
     }
     
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        if let player = self.player {
+            if player.position.y > self.size.height || player.position.y < 0 {
+                movePlayerToStart()
+        }
     }
-        
+}
+    
+    
 }
