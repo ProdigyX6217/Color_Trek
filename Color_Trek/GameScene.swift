@@ -18,26 +18,31 @@ enum Enemies: Int{
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-//    Array of SKSpriteNodes(tracks)
-    var tracksArray:[SKSpriteNode]? = [SKSpriteNode]()
+//    Nodes
     var player:SKSpriteNode?
     var target:SKSpriteNode?
+    
     
 //    Tracking which track the player is currently on
     var currentTrack = 0
     var movingToTrack = false
     
-//    moveSound
-    let moveSound = SKAction.playSoundFileNamed("move.wav", waitForCompletion: false)
     
+//    Arrays
+    var tracksArray:[SKSpriteNode]? = [SKSpriteNode]()
     let trackVelocities = [180, 200, 250]
     var directionArray = [Bool]()
     var velocityArray = [Int]()
     
-//    Define categories
+    
+//    Collision Categories
     let playerCategory:UInt32 = 0x1 << 0
     let enemyCategory:UInt32 = 0x1 << 1
     let targetCategory:UInt32 = 0x1 << 2
+    
+    
+//    moveSound
+    let moveSound = SKAction.playSoundFileNamed("move.wav", waitForCompletion: false)
     
     
     func setUpTracks(){
@@ -84,7 +89,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func createEnemy(type: Enemies, forTrack track: Int) -> SKShapeNode?{
-        
         let enemySprite = SKShapeNode()
         enemySprite.name = "ENEMY"
         
@@ -134,7 +138,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
         
     
-//    Called as scene is presented in the SKView
+//    Scene Entry Point
     override func didMove(to view: SKView) {
         setUpTracks()
         createPlayer()
@@ -184,8 +188,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        Check if player is available/ have player move horizontally
         if let player = self.player {
             let moveAction = SKAction.move(to: CGPoint(x: nextTrack.x, y: player.position.y), duration: 0.2)
+            
+            let up = directionArray[currentTrack + 1]
+            
             player.run(moveAction, completion: {
                 self.movingToTrack = false
+                
+                if self.currentTrack != 8 {
+                    self.player?.physicsBody?.velocity = up ? CGVector(dx: 0, dy: self.velocityArray[self.currentTrack]) : CGVector(dx: 0, dy: -self.velocityArray[self.currentTrack])
+                }else{
+                    self.player?.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                }
+                
             })
             
             currentTrack += 1
@@ -195,7 +209,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    
+//      Touch Control
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 //        Using touches Set and accessing first object
         if let touch = touches.first{
@@ -214,13 +228,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !movingToTrack{
             player?.removeAllActions()
         }
     }
-    
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         player?.removeAllActions()
