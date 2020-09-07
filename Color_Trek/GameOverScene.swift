@@ -1,9 +1,9 @@
 //
 //  GameOverScene.swift
-//  ACGame
+//  Color_Trek
 //
-//  Created by Brian Advent on 16.06.17.
-//  Copyright © 2017 Brian Advent. All rights reserved.
+//  Created by Student Laptop_7/19_1 on 9/7/20.
+//  Copyright © 2020 Makeschool. All rights reserved.
 //
 
 import SpriteKit
@@ -21,6 +21,8 @@ class GameOverScene : SKScene {
         lastScoreLabel = self.childNode(withName: "lastScoreLabel") as? SKLabelNode
         bestScoreLabel = self.childNode(withName: "bestScoreLabel") as? SKLabelNode
     
+        lastScoreLabel?.text = "\(GameHandler.sharedInstance.score)"
+        bestScoreLabel?.text = "\(GameHandler.sharedInstance.highScore)"
         
         playButton = self.childNode(withName: "startButton") as? SKSpriteNode
         

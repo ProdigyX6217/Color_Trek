@@ -1,10 +1,11 @@
 //
-//  scrollingBackground.swift
+//  ScrollingBackground.swift
 //  Color_Trek
 //
 //  Created by Student Laptop_7/19_1 on 9/7/20.
 //  Copyright © 2020 Makeschool. All rights reserved.
 //
+
 
 import SpriteKit
 

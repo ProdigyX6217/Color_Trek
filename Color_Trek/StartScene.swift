@@ -1,9 +1,9 @@
 //
 //  StartScene.swift
-//  ACGame
+//  Color_Trek
 //
-//  Created by Brian Advent on 30.05.17.
-//  Copyright © 2017 Brian Advent. All rights reserved.
+//  Created by Student Laptop_7/19_1 on 9/7/20.
+//  Copyright © 2020 Makeschool. All rights reserved.
 //
 
 import SpriteKit

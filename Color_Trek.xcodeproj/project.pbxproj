@@ -29,6 +29,7 @@
 		4D5DE6202506D411004C2B3C /* StartScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4D5DE61C2506D411004C2B3C /* StartScene.sks */; };
 		4D5DE6212506D411004C2B3C /* GameOverScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4D5DE61D2506D411004C2B3C /* GameOverScene.sks */; };
 		4D5DE6262506DA81004C2B3C /* ScrollingBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DE6252506DA81004C2B3C /* ScrollingBackground.swift */; };
+		4D5DE6282506F75C004C2B3C /* GameHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DE6272506F75C004C2B3C /* GameHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		4D5DE61C2506D411004C2B3C /* StartScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = StartScene.sks; sourceTree = "<group>"; };
 		4D5DE61D2506D411004C2B3C /* GameOverScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameOverScene.sks; sourceTree = "<group>"; };
 		4D5DE6252506DA81004C2B3C /* ScrollingBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollingBackground.swift; sourceTree = "<group>"; };
+		4D5DE6272506F75C004C2B3C /* GameHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 				4D355D8224FE9CAB00114506 /* GameScene.swift */,
 				4D5DE61B2506D411004C2B3C /* StartScene.swift */,
 				4D5DE6252506DA81004C2B3C /* ScrollingBackground.swift */,
+				4D5DE6272506F75C004C2B3C /* GameHandler.swift */,
 				4D5DE61A2506D410004C2B3C /* GameOverScene.swift */,
 				4D355D8624FE9CAB00114506 /* Main.storyboard */,
 				4D355D8924FE9CB100114506 /* Assets.xcassets */,
@@ -226,6 +229,7 @@
 				4D355D8324FE9CAB00114506 /* GameScene.swift in Sources */,
 				4D355D8524FE9CAB00114506 /* GameViewController.swift in Sources */,
 				4D5DE61E2506D411004C2B3C /* GameOverScene.swift in Sources */,
+				4D5DE6282506F75C004C2B3C /* GameHandler.swift in Sources */,
 				4D5DE61F2506D411004C2B3C /* StartScene.swift in Sources */,
 				4D355D7D24FE9CAB00114506 /* AppDelegate.swift in Sources */,
 				4D5DE6262506DA81004C2B3C /* ScrollingBackground.swift in Sources */,

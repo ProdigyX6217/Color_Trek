@@ -32,6 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var currentScore:Int = 0 {
         didSet {
             self.scoreLabel?.text = "SCORE: \(self.currentScore)"
+            GameHandler.sharedInstance.score = currentScore
         }
     }
     
@@ -229,6 +230,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
 //    Game Over Transition
     func gameOver() {
+        GameHandler.sharedInstance.saveGameStats()
+        
         self.run(SKAction.playSoundFileNamed("levelCompleted.wav", waitForCompletion: true))
         
         let transition = SKTransition.fade(withDuration: 1)
