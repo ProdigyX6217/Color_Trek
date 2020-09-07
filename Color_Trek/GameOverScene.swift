@@ -38,7 +38,12 @@ class GameOverScene : SKScene {
             let node = self.atPoint(pos)
             
             if node == playButton {
-            
+                let transition = SKTransition.fade(withDuration: 1)
+                if let gameScene = SKScene(fileNamed: "GameScene") {
+                    gameScene.scaleMode = .aspectFit
+                    self.view?.presentScene(gameScene, transition: transition)
+                }
+                
             }
         }
     }

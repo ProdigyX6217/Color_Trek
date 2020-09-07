@@ -213,6 +213,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
         
     
+//  Level Completed Animation
     func nextLevel (playerPhysicsBody:SKPhysicsBody) {
         currentScore += 1
         self.run(SKAction.playSoundFileNamed("level.wav", waitForCompletion: true))
@@ -223,6 +224,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             emitter?.removeFromParent()
             self.movePlayerToStart()
         }
+    }
+    
+    
+//    Game Over Transition
+    func gameOver() {
+        self.run(SKAction.playSoundFileNamed("levelCompleted.wav", waitForCompletion: true))
+        
+        let transition = SKTransition.fade(withDuration: 1)
+        if let gameOverScene = SKScene(fileNamed: "GameOverScene") {
+            gameOverScene.scaleMode = .aspectFit
+            self.view?.presentScene(gameOverScene, transition: transition)
+        }
+        
     }
     
     
@@ -382,6 +396,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if remainingTime <= 5 {
             timeLabel?.fontColor = UIColor.red
         }
+        
+        if remainingTime == 0 {
+            gameOver()
+        }
+        
 }
     
     
