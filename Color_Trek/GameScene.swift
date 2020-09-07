@@ -9,6 +9,7 @@
 import SpriteKit
 import GameplayKit
 
+
 //  3 Enemy types
 enum Enemies: Int{
     case small
@@ -21,6 +22,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //    Nodes
     var player:SKSpriteNode?
     var target:SKSpriteNode?
+    
+    
+//      HUD
+    var timeLabel:SKLabelNode?
+    var scoreLabel:SKLabelNode?
+    
+    
+    var currentScore:Int = 0 {
+        didSet {
+            self.scoreLabel?.text = "SCORE: \(self.currentScore)"
+        }
+    }
+    
+    var remainingTime:TimeInterval = 60 {
+        didSet {
+            self.timeLabel?.text = "TIME: \(Int(self.remainingTime))"
+        }
+    }
     
     
 //    Tracking which track the player is currently on
@@ -45,6 +64,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let moveSound = SKAction.playSoundFileNamed("move.wav", waitForCompletion: false)
     var backgroundNoise: SKAudioNode!
     
+    
+    func createHUD () {
+        timeLabel = self.childNode(withName: "time") as? SKLabelNode
+        scoreLabel = self.childNode(withName: "score") as? SKLabelNode
+        
+        remainingTime = 60
+        currentScore = 0
+    }
     
     
     func setUpTracks(){
@@ -150,6 +177,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     
     func nextLevel (playerPhysicsBody:SKPhysicsBody) {
+        currentScore += 1
         self.run(SKAction.playSoundFileNamed("level.wav", waitForCompletion: true))
         let emitter = SKEmitterNode(fileNamed: "fireworks.sks")
         playerPhysicsBody.node?.addChild(emitter!)
@@ -164,6 +192,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //    Scene Entry Point
     override func didMove(to view: SKView) {
         setUpTracks()
+        
+        createHUD()
+        launchGameTimer()
+        
         createPlayer()
         createTarget()
         
@@ -188,6 +220,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }, SKAction.wait(forDuration: 2)])))
         
     }
+    
+    
+    func launchGameTimer () {
+        let timeAction = SKAction.repeatForever(SKAction.sequence([SKAction.run({
+            self.remainingTime -= 1
+        }),SKAction.wait(forDuration: 1)]))
+        
+        timeLabel?.run(timeAction)
+    }
+    
     
     func moveVertically (up:Bool) {
         if up {
@@ -293,8 +335,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let player = self.player {
             if player.position.y > self.size.height || player.position.y < 0 {
                 movePlayerToStart()
+            }
         }
-    }
+        
+        if remainingTime <= 5 {
+            timeLabel?.fontColor = UIColor.red
+        }
 }
     
     
