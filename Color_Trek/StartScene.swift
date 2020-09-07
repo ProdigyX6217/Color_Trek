@@ -14,8 +14,17 @@ class StartScene: SKScene {
     var gameScene:SKScene!
     var backgroundMusic: SKAudioNode!
     
+    var scrollingBG:ScrollingBackground?
+    
+    
     override func didMove(to view: SKView) {
         playButton = self.childNode(withName: "startButton") as? SKSpriteNode
+        
+        scrollingBG = ScrollingBackground.scrollingNodeWithImage(imageName: "loopBG", containerWidth: self.size.width)
+        scrollingBG?.scrollingSpeed = 1.5
+        scrollingBG?.anchorPoint = .zero
+        
+        self.addChild(scrollingBG!)
         
         
         if let musicURL = Bundle.main.url(forResource: "MenuHighscoreMusic", withExtension: "mp3") {
@@ -39,6 +48,13 @@ class StartScene: SKScene {
                 gameScene.scaleMode = .aspectFit
                 self.view?.presentScene(gameScene, transition: transition)
             }
+        }
+    }
+    
+    
+    override func update(_ currentTime: TimeInterval) {
+        if let scrollBG = self.scrollingBG {
+            scrollBG.update(currentTime: currentTime)
         }
     }
 }
