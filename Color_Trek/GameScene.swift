@@ -93,7 +93,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player?.physicsBody?.linearDamping = 0
         player?.physicsBody?.categoryBitMask = playerCategory
         player?.physicsBody?.collisionBitMask = 0
-        player?.physicsBody?.contactTestBitMask = enemyCategory | targetCategory
+        player?.physicsBody?.contactTestBitMask = enemyCategory | targetCategory | powerUpCategory
         
 //        Create Player Position Constant by using tracks Array
         guard let playerPosition = tracksArray?.first?.position.x else {return}
@@ -151,12 +151,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func createPowerUp (forTrack track:Int) -> SKSpriteNode? {
-        let powerUpSprite = SKSpriteNode(imageNamed: "PowerUp")
+        let powerUpSprite = SKSpriteNode(imageNamed: "powerUp")
         powerUpSprite.name = "ENEMY"
         
         powerUpSprite.physicsBody = SKPhysicsBody(circleOfRadius: powerUpSprite.size.width / 2)
         powerUpSprite.physicsBody?.linearDamping = 0
         powerUpSprite.physicsBody?.categoryBitMask = powerUpCategory
+        powerUpSprite.physicsBody?.collisionBitMask = powerUpCategory
         
         
         let up = directionArray[track]
@@ -173,10 +174,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func spawnEnemies () {
+//  Creates PowerUp on Random Tracks
+    var randomTrackNumber = 0
+        let createPowerUp = GKRandomSource.sharedRandom().nextBool()
+        
+        if  createPowerUp {
+            randomTrackNumber = GKRandomSource.sharedRandom().nextInt(upperBound: 6) + 1
+            if let powerUpObject = self.createPowerUp(forTrack: randomTrackNumber) {
+                self.addChild(powerUpObject)
+            }
+        }
+        
         for i in 1 ... 7 {
-            let randomEnemyType = Enemies(rawValue: GKRandomSource.sharedRandom().nextInt(upperBound: 3))!
-            if let newEnemy = createEnemy(type: randomEnemyType, forTrack: i) {
-                self.addChild(newEnemy)
+//      Creates Enemies if We're Not Creating A Power Up for a Specific Track
+            if randomTrackNumber != i {
+                let randomEnemyType = Enemies(rawValue: GKRandomSource.sharedRandom().nextInt(upperBound: 3))!
+                if let newEnemy = createEnemy(type: randomEnemyType, forTrack: i) {
+                    self.addChild(newEnemy)
+                }
             }
         }
         
@@ -348,6 +363,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         } else if playerBody.categoryBitMask == playerCategory && otherBody.categoryBitMask == targetCategory {
             nextLevel(playerPhysicsBody: playerBody)
+        } else if playerBody.categoryBitMask == playerCategory && otherBody.categoryBitMask == powerUpCategory {
+            self.run(SKAction.playSoundFileNamed("powerUp.wav", waitForCompletion: true))
+            otherBody.node?.removeFromParent()
+            remainingTime += 5
         }
     }
     
